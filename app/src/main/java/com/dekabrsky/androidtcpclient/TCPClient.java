@@ -38,58 +38,38 @@ public class TCPClient {
     }
 
     public void run() {
-
         mRun = true;
-
         try {
-            //здесь вы должны указать IP-адрес вашего компьютера.
             InetAddress serverAddr = InetAddress.getByName(SERVERIP);
-
             Log.e("TCP Client", "C: Connecting...");
-
-            //создание сокета для установления соединения с сервером
             Socket socket = new Socket(serverAddr, SERVERPORT);
-
+            String mServerMessage = "init";
             try {
-
-                //отправление сообщения на сервер
-                out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
-
+                PrintWriter mBufferOut = new PrintWriter(socket.getOutputStream());
                 Log.e("TCP Client", "C: Sent.");
-
-                Log.e("TCP Client", "C: Done.");
-
-                //получение сообщения, которое сервер отправляет обратно
-                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
+                BufferedReader mBufferIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                int charsRead = 0; char[] buffer = new char[2024]; //choose your buffer size if you need other than 1024
                 while (mRun) {
-                    serverMessage = in.readLine();
-
-                    if (serverMessage != null && mMessageListener != null) {
-                        mMessageListener.messageReceived(serverMessage);
+                    charsRead = mBufferIn.read(buffer);
+                    mServerMessage = new String(buffer).substring(0, charsRead);
+                    if (mServerMessage != null && mMessageListener != null) {
+                        Log.e("in if---------->>", " Received : '" + mServerMessage + "'");
                     }
-                    serverMessage = null;
-
+                    mServerMessage = null;
                 }
-
-                Log.e("RESPONSE FROM SERVER", "S: Received Message: '" + serverMessage + "'");
-
+                Log.e("-------------- >>", " Received : '" + mServerMessage + "'");
             } catch (Exception e) {
-
                 Log.e("TCP", "S: Error", e);
-
             } finally {
-                //сокет должен быть закрыт. Невозможно повторно подключиться к этому сокету
-                //после его закрытия, что означает, что должен быть создан новый экземпляр сокета.
+                //the socket must be closed. It is not possible to reconnect to this socket
+                // after it is closed, which means a new socket instance has to be created.
                 socket.close();
+                Log.e("-------------- >>", "Close socket " );
             }
 
         } catch (Exception e) {
-
             Log.e("TCP", "C: Error", e);
-
         }
-
     }
 
     //Объявление интерфейса. Метод messageReceived(String message) должен быть
