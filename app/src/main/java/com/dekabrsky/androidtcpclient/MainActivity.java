@@ -3,6 +3,7 @@ package com.dekabrsky.androidtcpclient;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -62,7 +63,7 @@ public class MainActivity extends Activity
 
         @Override
         protected TCPClient doInBackground(String... message) {
-
+            Log.i("TCP", "doInBackground");
             //создаем экземпляр ТСР-клиента
             mTcpClient = new TCPClient(new TCPClient.OnMessageReceived() {
                 @Override
@@ -80,9 +81,9 @@ public class MainActivity extends Activity
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
-
             //добавляем в лист сообщение от сервера
             arrayList.add(values[0]);
+
             // уведомим адаптер об изменении набора данных. Это означает, что получено
             // новое сообщение от сервера и добавлено в лист
             mAdapter.notifyDataSetChanged();
