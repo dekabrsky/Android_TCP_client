@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -17,6 +18,7 @@ public class MainActivity extends Activity
     private ArrayList<String> arrayList;
     private MyCustomAdapter mAdapter;
     private TCPClient mTcpClient;
+    private String curIP = "Задайте IP";
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -27,7 +29,12 @@ public class MainActivity extends Activity
         arrayList = new ArrayList<String>();
 
         final EditText editText = (EditText) findViewById(R.id.editText);
+        final EditText newIPText = (EditText) findViewById(R.id.edit_ip);
         Button send = (Button)findViewById(R.id.send_button);
+        Button update = (Button)findViewById(R.id.update_button);
+        final TextView curIPView = (TextView) findViewById(R.id.current_ip);
+        curIPView.setText(curIP);
+
 
         //relate the listView from java to the one created in xml
         mList = (ListView)findViewById(R.id.list);
@@ -54,6 +61,17 @@ public class MainActivity extends Activity
                 //обновляем лист
                 mAdapter.notifyDataSetChanged();
                 editText.setText("");
+            }
+        });
+
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String message = newIPText.getText().toString();
+                curIP = message;
+                curIPView.setText(curIP);
+                newIPText.setText("");
             }
         });
 
