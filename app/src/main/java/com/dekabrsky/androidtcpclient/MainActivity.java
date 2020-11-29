@@ -1,6 +1,7 @@
 package com.dekabrsky.androidtcpclient;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +19,7 @@ public class MainActivity extends Activity
     private ArrayList<String> arrayList;
     private MyCustomAdapter mAdapter;
     private TCPClient mTcpClient;
-    private String curIP = "Задайте IP";
+    private String curIP = "192.168.0.102";
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -32,6 +33,7 @@ public class MainActivity extends Activity
         final EditText newIPText = (EditText) findViewById(R.id.edit_ip);
         Button send = (Button)findViewById(R.id.send_button);
         Button update = (Button)findViewById(R.id.update_button);
+        Button reload = (Button)findViewById(R.id.reload_button);
         final TextView curIPView = (TextView) findViewById(R.id.current_ip);
         curIPView.setText(curIP);
 
@@ -67,14 +69,22 @@ public class MainActivity extends Activity
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                String message = newIPText.getText().toString();
-                curIP = message;
+                String newIP = newIPText.getText().toString();
+                curIP = newIP;
                 curIPView.setText(curIP);
                 newIPText.setText("");
+                mTcpClient.sendMessage("close");
+                new connectTask().execute("");
             }
         });
-
+        reload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mTcpClient.sendMessage("close");
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public class connectTask extends AsyncTask<String,String,TCPClient> {
@@ -90,7 +100,7 @@ public class MainActivity extends Activity
                     //этот метод вызывает onProgressUpdate
                     publishProgress(message);
                 }
-            });
+            }, curIP);
             mTcpClient.run();
 
             return null;

@@ -23,13 +23,18 @@
             android:layout_margin="20dp"
             android:layout_gravity="center_vertical"
             android:layout_height="50dp"
-            android:layout_weight="0" />
+            android:layout_weight="0"/>
 
         <Button android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/update_button"
             android:layout_gravity="center_vertical"
             android:text="update" />
+        <Button android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/reload_button"
+            android:layout_gravity="center_vertical"
+            android:text="reload" />
     </LinearLayout>
 
     <ListView android:id="@+id/list"

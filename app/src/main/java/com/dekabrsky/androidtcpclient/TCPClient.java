@@ -12,7 +12,7 @@ import java.net.Socket;
 public class TCPClient {
 
     public static final String TAG = TCPClient.class.getSimpleName();
-    public static final String SERVER_IP = "192.168.0.110"; //server IP address
+    private final String SERVER_IP; //server IP address
     public static final int SERVER_PORT = 4444;
     // message to send to the server
     private String mServerMessage;
@@ -28,8 +28,9 @@ public class TCPClient {
     /**
      * Constructor of the class. OnMessagedReceived listens for the messages received from server
      */
-    public TCPClient(OnMessageReceived listener) {
+    public TCPClient(OnMessageReceived listener, String curIP) {
         mMessageListener = listener;
+        SERVER_IP = curIP;
     }
 
     /**
@@ -73,6 +74,7 @@ public class TCPClient {
     public void run() {
 
         mRun = true;
+        sendMsgToListener("--INIT--");
 
         try {
             //here you must put your computer's IP address.
@@ -82,6 +84,7 @@ public class TCPClient {
 
             //create a socket to make the connection with the server
             Socket socket = new Socket(serverAddr, SERVER_PORT);
+            sendMsgToListener("--SOCKET ON " + SERVER_IP + ":" + SERVER_PORT +" IS OPEN--");
 
             try {
 
@@ -94,14 +97,12 @@ public class TCPClient {
 
                 //in this while the client listens for the messages sent by the server
                 while (mRun) {
-
                     mServerMessage = mBufferIn.readLine();
-
-                    if (mServerMessage != null && mMessageListener != null) {
-                        //call the method messageReceived from MyActivity class
-                        mMessageListener.messageReceived(mServerMessage);
+                    if (mServerMessage.equals("close")) {
+                        socket.close();
+                        sendMsgToListener("--SOCKET ON " + SERVER_IP + ":" + SERVER_PORT + " IS CLOSE--");
                     }
-
+                    sendMsgToListener(mServerMessage);
                 }
 
                 Log.d("RESPONSE FROM SERVER", "S: Received Message: '" + mServerMessage + "'");
@@ -112,12 +113,21 @@ public class TCPClient {
                 //the socket must be closed. It is not possible to reconnect to this socket
                 // after it is closed, which means a new socket instance has to be created.
                 socket.close();
+                sendMsgToListener("--SOCKET ON " + SERVER_IP + ":" + SERVER_PORT + " IS CLOSE--");
             }
 
         } catch (Exception e) {
             Log.e("TCP", "C: Error", e);
+            sendMsgToListener("--EXCEPTION--");
         }
 
+    }
+
+    private void sendMsgToListener(String mServerMessage) {
+        if (mServerMessage != null && mMessageListener != null) {
+            //call the method messageReceived from MyActivity class
+            mMessageListener.messageReceived(mServerMessage);
+        }
     }
 
     //Declare the interface. The method messageReceived(String message) will must be implemented in the Activity
