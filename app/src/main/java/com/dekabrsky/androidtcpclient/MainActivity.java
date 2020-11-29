@@ -41,6 +41,7 @@ public class MainActivity extends Activity
         //relate the listView from java to the one created in xml
         mList = (ListView)findViewById(R.id.list);
         mAdapter = new MyCustomAdapter(this, arrayList);
+        mAdapter.notifyDataSetChanged();
         mList.setAdapter(mAdapter);
 
         // подключаемся к серверу
@@ -75,14 +76,18 @@ public class MainActivity extends Activity
                 newIPText.setText("");
                 mTcpClient.sendMessage("close");
                 new connectTask().execute("");
+                mAdapter.notifyDataSetChanged();
             }
         });
         reload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mTcpClient.sendMessage("close");
-                Intent intent = new Intent(MainActivity.this, MainActivity.class);
-                startActivity(intent);
+                mAdapter.notifyDataSetChanged();
+                /*Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(intent);*/
+                new connectTask().execute("");
+                mAdapter.notifyDataSetChanged();
             }
         });
     }

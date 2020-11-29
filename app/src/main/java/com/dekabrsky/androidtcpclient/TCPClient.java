@@ -31,6 +31,7 @@ public class TCPClient {
     public TCPClient(OnMessageReceived listener, String curIP) {
         mMessageListener = listener;
         SERVER_IP = curIP;
+        Log.d("TCP Client", "Creating...");
     }
 
     /**
