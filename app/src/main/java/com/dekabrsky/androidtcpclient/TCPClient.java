@@ -3,6 +3,7 @@ package com.dekabrsky.androidtcpclient;
 import android.util.Log;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -14,7 +15,7 @@ public class TCPClient {
 
     public static final String TAG = TCPClient.class.getSimpleName();
     private final String SERVER_IP; //server IP address
-    public static final int SERVER_PORT = 4444;
+    public static final int SERVER_PORT = 50000;
     // message to send to the server
     private String mServerMessage;
     // sends message received notifications
@@ -25,6 +26,7 @@ public class TCPClient {
     private PrintWriter mBufferOut;
     // used to read messages from the server
     private BufferedReader mBufferIn;
+    private Socket socket;
 
     /**
      * Constructor of the class. OnMessagedReceived listens for the messages received from server
@@ -59,7 +61,12 @@ public class TCPClient {
      * Close the connection and release the members
      */
     public void stopClient() {
-
+        sendMsgToListener("--SOCKET IS closed--");
+        try {
+            socket.close();
+        } catch (IOException e){
+            sendMsgToListener("--SOCKET IS not closed--");
+        }
         mRun = false;
 
         if (mBufferOut != null) {
@@ -85,8 +92,8 @@ public class TCPClient {
             Log.d("TCP Client", "C: Connecting...");
 
             //create a socket to make the connection with the server
-            Socket socket = new Socket();
-            socket.connect(new InetSocketAddress(serverAddr, SERVER_PORT),1000);
+            socket = new Socket();
+            socket.connect(new InetSocketAddress(serverAddr, SERVER_PORT),5000);
             sendMsgToListener("--SOCKET ON " + SERVER_IP + ":" + SERVER_PORT +" IS OPEN--");
 
             try {
@@ -138,5 +145,4 @@ public class TCPClient {
     public interface OnMessageReceived {
         public void messageReceived(String message);
     }
-
 }

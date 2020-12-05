@@ -19,7 +19,8 @@ public class MainActivity extends Activity
     private ArrayList<String> arrayList;
     private MyCustomAdapter mAdapter;
     private TCPClient mTcpClient;
-    private String curIP = "192.168.1.121";
+    private String curIP = "46.48.42.174";
+    private AsyncTask<String,String,TCPClient> task;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -45,7 +46,8 @@ public class MainActivity extends Activity
         mList.setAdapter(mAdapter);
 
         // подключаемся к серверу
-        new connectTask().execute("");
+        task = new connectTask();
+        task.execute("");
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,20 +76,24 @@ public class MainActivity extends Activity
                 curIP = newIP;
                 curIPView.setText(curIP);
                 newIPText.setText("");
-                mTcpClient.sendMessage("close");
-                new connectTask().execute("");
+                mTcpClient.sendMessage("update");
                 mAdapter.notifyDataSetChanged();
+                mTcpClient.stopClient();
+                task = new connectTask();
+                task.execute("");
+
             }
         });
         reload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mTcpClient.sendMessage("close");
+                mTcpClient.sendMessage("reload");
                 mAdapter.notifyDataSetChanged();
                 /*Intent intent = new Intent(MainActivity.this, MainActivity.class);
                 startActivity(intent);*/
-                new connectTask().execute("");
-                mAdapter.notifyDataSetChanged();
+                mTcpClient.stopClient();
+                task = new connectTask();
+                task.execute("");
             }
         });
     }
@@ -107,7 +113,6 @@ public class MainActivity extends Activity
                 }
             }, curIP);
             mTcpClient.run();
-
             return null;
         }
 
