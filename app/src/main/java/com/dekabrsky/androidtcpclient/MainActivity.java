@@ -19,7 +19,7 @@ public class MainActivity extends Activity
     private ArrayList<String> arrayList;
     private MyCustomAdapter mAdapter;
     private TCPClient mTcpClient;
-    private String curIP = "192.168.0.102";
+    private String curIP = "192.168.1.121";
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -96,7 +96,7 @@ public class MainActivity extends Activity
 
         @Override
         protected TCPClient doInBackground(String... message) {
-            Log.i("TCP", "doInBackground");
+            Log.e("TCP", "doInBackground");
             //создаем экземпляр ТСР-клиента
             mTcpClient = new TCPClient(new TCPClient.OnMessageReceived() {
                 @Override

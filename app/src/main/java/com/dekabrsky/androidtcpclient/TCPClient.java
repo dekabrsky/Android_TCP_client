@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class TCPClient {
@@ -84,7 +85,8 @@ public class TCPClient {
             Log.d("TCP Client", "C: Connecting...");
 
             //create a socket to make the connection with the server
-            Socket socket = new Socket(serverAddr, SERVER_PORT);
+            Socket socket = new Socket();
+            socket.connect(new InetSocketAddress(serverAddr, SERVER_PORT),1000);
             sendMsgToListener("--SOCKET ON " + SERVER_IP + ":" + SERVER_PORT +" IS OPEN--");
 
             try {
