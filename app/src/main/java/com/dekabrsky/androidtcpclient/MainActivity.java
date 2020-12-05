@@ -1,7 +1,6 @@
 package com.dekabrsky.androidtcpclient;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +18,7 @@ public class MainActivity extends Activity
     private ArrayList<String> arrayList;
     private MyCustomAdapter mAdapter;
     private TCPClient mTcpClient;
-    private String curIP = "46.48.42.174";
+    private String curIP = "46.48.42.174:50000";
     private AsyncTask<String,String,TCPClient> task;
 
     @Override

@@ -15,7 +15,7 @@ public class TCPClient {
 
     public static final String TAG = TCPClient.class.getSimpleName();
     private final String SERVER_IP; //server IP address
-    public static final int SERVER_PORT = 50000;
+    private final int SERVER_PORT;
     // message to send to the server
     private String mServerMessage;
     // sends message received notifications
@@ -33,7 +33,9 @@ public class TCPClient {
      */
     public TCPClient(OnMessageReceived listener, String curIP) {
         mMessageListener = listener;
-        SERVER_IP = curIP;
+        String[] splitString = curIP.split(":");
+        SERVER_IP = splitString[0];
+        SERVER_PORT = Integer.parseInt(splitString[1]);
         Log.d("TCP Client", "Creating...");
     }
 
